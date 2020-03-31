@@ -3,9 +3,15 @@ package com.foodTruckProjet.foodTruck.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.*;
+
+@Entity
 public class Produit {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String image;
 	private String nom;
@@ -14,7 +20,9 @@ public class Produit {
 	private String description;
 	private String disponibilite;
 	private String famille;
-	private ArrayList<Type> type;
+	
+	@ManyToMany
+	private List<Type> type = new ArrayList<Type>();
 	
 	public Produit()
 	{
@@ -85,11 +93,13 @@ public class Produit {
 		this.famille = famille;
 	}
 
-	public ArrayList<Type> getType() {
+	
+
+	public List<Type> getType() {
 		return type;
 	}
 
-	public void setType(ArrayList<Type> type) {
+	public void setType(List<Type> type) {
 		this.type = type;
 	}
 
@@ -101,10 +111,9 @@ public class Produit {
 				+ getType() + "]";
 	}
 
-	public Produit(int id, String image, String nom, double prix, int stock, String description, String disponibilite,
+	public Produit(String image, String nom, double prix, int stock, String description, String disponibilite,
 			String famille, ArrayList<Type> type) {
 		super();
-		this.id = id;
 		this.image = image;
 		this.nom = nom;
 		this.prix = prix;
@@ -115,11 +124,11 @@ public class Produit {
 		this.type = type;
 	}
 	
-	public boolean isDispWeek(LocalDate date)
+	public boolean isDispWeek(LocalDate dateDeLivraisonSouhaite)
 	{
 		String[] dispo = this.disponibilite.split(",");
 		for (String jour : dispo) {
-			if(jour.equals(Integer.toString(date.getDayOfWeek().getValue())))
+			if(jour.equals(Integer.toString(dateDeLivraisonSouhaite.getDayOfWeek().getValue())))
 			{
 				return true;
 			}
@@ -127,7 +136,7 @@ public class Produit {
 		return false;
 	}
 	
-	public boolean isDispHour(LocalDateTime date, String typeVoulu)
+	public boolean isDispHour(LocalDateTime dateDeCommande, String typeVoulu)
 	{
 		int heure = 0;
 		for (Type type : this.type) {
@@ -137,8 +146,8 @@ public class Produit {
 			}
 		}
 		
-		date = date.withHour(heure);
+		dateDeCommande = dateDeCommande.withHour(heure);
 		LocalDateTime now = LocalDateTime.now();
-		return now.isBefore(date);
+		return now.isBefore(dateDeCommande);
 	}
 }

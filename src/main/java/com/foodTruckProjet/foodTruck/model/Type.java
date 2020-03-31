@@ -1,7 +1,12 @@
 package com.foodTruckProjet.foodTruck.model;
 
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+
+@Entity
 public class Type {
 
+	@Id
 	private String nom;
 	private int heure;
 	

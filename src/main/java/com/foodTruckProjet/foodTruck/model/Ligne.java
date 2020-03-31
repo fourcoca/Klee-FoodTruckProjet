@@ -2,12 +2,23 @@ package com.foodTruckProjet.foodTruck.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.*;
+
+@Entity
 public class Ligne {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
+	
 	private int quantite;
 	private String statut;
-	private LocalDateTime date;
+	private LocalDateTime dateDeLivraison;
 	private String adresse;
+	
+	@ManyToOne
 	private Produit produit;
+	
 	public Ligne()
 	{
 		
@@ -37,12 +48,14 @@ public class Ligne {
 		this.statut = statut;
 	}
 
-	public LocalDateTime getDate() {
-		return date;
+	
+
+	public LocalDateTime getDateDeLivraison() {
+		return dateDeLivraison;
 	}
 
-	public void setDate(LocalDateTime date) {
-		this.date = date;
+	public void setDateDeLivraison(LocalDateTime dateDeLivraison) {
+		this.dateDeLivraison = dateDeLivraison;
 	}
 
 	public String getAdresse() {
@@ -57,7 +70,7 @@ public class Ligne {
 		super();
 		this.quantite = quantite;
 		this.statut = statut;
-		this.date = date;
+		this.dateDeLivraison = date;
 		this.adresse = adresse;
 		this.produit = produit;
 	}
@@ -67,7 +80,7 @@ public class Ligne {
 	@Override
 	public String toString() {
 		return "Ligne [getProduit()=" + getProduit() + ", getQuantite()=" + getQuantite() + ", getStatut()="
-				+ getStatut() + ", getDate()=" + getDate() + ", getAdresse()=" + getAdresse() + ", getPrix()="
+				+ getStatut() + ", getDate()=" + getDateDeLivraison() + ", getAdresse()=" + getAdresse() + ", getPrix()="
 				+ getPrix() + "]";
 	}
 
@@ -98,7 +111,7 @@ public class Ligne {
 	public String getEtat()
 	{
 		LocalDateTime now = LocalDateTime.now();
-		if(now.isBefore(this.getDate()))
+		if(now.isBefore(this.getDateDeLivraison()))
 		{
 			return "En cours";
 		}
@@ -107,5 +120,13 @@ public class Ligne {
 			return "Livré";
 		}
 		
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

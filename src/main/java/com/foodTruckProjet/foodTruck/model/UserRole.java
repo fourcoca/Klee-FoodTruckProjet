@@ -1,26 +1,27 @@
 package  com.foodTruckProjet.foodTruck.model;
 
-import javax.annotation.Generated;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-
+@Entity
 public class UserRole {
 	
-	private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 	
+	@ManyToOne
 	private Utilisateur utilisateur;
-	
+
+	@Enumerated(EnumType.STRING)
 	private Role role;
 
 	public UserRole() {
+	}
+
+	public UserRole(Utilisateur utilisateur, Role role) {
+		super();
+		this.utilisateur = utilisateur;
+		this.role = role;
 	}
 
 	public Integer getId() {
@@ -31,13 +32,6 @@ public class UserRole {
 		this.id = id;
 	}
 
-	public Utilisateur getUser() {
-		return utilisateur;
-	}
-
-	public void setUser(Utilisateur utilisateur) {
-		this.utilisateur = utilisateur;
-	}
 
 	public Role getRole() {
 		return role;
@@ -45,6 +39,14 @@ public class UserRole {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
 	}
 
 }
