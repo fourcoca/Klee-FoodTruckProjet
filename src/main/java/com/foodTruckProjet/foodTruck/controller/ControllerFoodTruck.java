@@ -2,23 +2,31 @@ package com.foodTruckProjet.foodTruck.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.foodTruckProjet.foodTruck.model.Produit;
+import com.foodTruckProjet.foodTruck.model.Utilisateur;
 import com.foodTruckProjet.foodTruck.repo.ProduitRepository;
+import com.foodTruckProjet.foodTruck.repo.UtilisateurRepository;
 
 @RestController
 public class ControllerFoodTruck {
 
 	@Autowired
 	private ProduitRepository prepo;
-
+	@Autowired
+	private UtilisateurRepository urepo;
+	
 	@GetMapping("/accueil")
 	public ModelAndView accueil(Model model) {
 		ModelAndView modelAndView = new ModelAndView("accueil", "top3", prepo.findtop3());
@@ -37,10 +45,28 @@ public class ControllerFoodTruck {
 		return modelAndView;
 	}
 
-	@RequestMapping("/connexion")
-	public ModelAndView connexion(Model model) {
-		ModelAndView modelAndView = new ModelAndView("connexion");
+	@GetMapping("/connexion")
+	public ModelAndView connectionGet(Model model, HttpServletRequest ht) {
+		ModelAndView modelAndView = new ModelAndView("connexion", "email", "");
+		modelAndView.addObject("pwd", "");
 		return modelAndView;
+	}
+
+	@PostMapping("/connexion")
+	public ModelAndView connectionPost(@RequestParam(name = "email") String email,
+			@RequestParam(name = "pwd") String mdp, Model model, HttpServletRequest ht) {
+		ModelAndView reussite = new ModelAndView("accueil");
+		ModelAndView echec = new ModelAndView("/connexion");
+		Utilisateur a = urepo.findByEmailAndMotDePasse(email, mdp);
+
+		if (a != null) {
+			ht.getSession().setAttribute("utilisateur", a);
+			ht.getSession().setAttribute("erreur", 0);
+			return reussite;
+		} else {
+			ht.getSession().setAttribute("erreur", 1);
+			return echec;
+		}
 	}
 
 	@RequestMapping("/contacts")
